@@ -60,20 +60,29 @@ const resize = () => {
 	}
 }
 
-let geometry = new THREE.SphereGeometry( 0.05, 16, 12 )
-const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } )
+let geometry = new THREE.SphereGeometry( 0.05, 4, 2)
+let material = new THREE.MeshBasicMaterial( { color: 0xffff00 } )
 const sphere = new THREE.Mesh( geometry, material )
 sphere.position.set(1,0,0)
 const group = new THREE.Group()
 scene.add(group)
 group.add(sphere)
 
+let vertProcessingFunction = null
 let go = true
 const loop = (time) => {
 	if (go) {
 		requestAnimationFrame(loop)
 		resize()
 		group.rotation.set(0, 0, time * 0.001)
+		if (vertProcessingFunction) {
+			group.children.forEach((mesh) => {
+				mesh.material.color.fromArray(vertProcessingFunction({
+					position: mesh.position,
+					time: time * 0.001,
+				}))
+			})
+		}
 		renderer.render(scene, camera)
 	}
 }
@@ -85,6 +94,11 @@ const app = Vue.createApp({
 		return {
 			verts: [],
 			file: null,
+			equation: `return [
+  Math.cos(((position.z + position.y) * 1) + (time * 4)) * 0.5 + 0.5,
+  0,
+  Math.cos(((position.x + position.y) * 0.5) + (time * 2)) * 0.5 + 0.5
+]`,
 		}
 	},
 	computed: {
@@ -95,53 +109,73 @@ const app = Vue.createApp({
 	methods: {
 		setFile (event) {
 			const file = event.target.files[0]
-			file.text().then((text) => {
-				geometry = new THREE.SphereGeometry( 1, 16, 12 )
-				// ...is this really the best way to empty the group?
-				group.children = []
-				this.verts = []
-				const lines = text.replace(/\r/g, '').split('\n')
-				lines.forEach((line) => {
-					const segments = line.split(' ')
-					if (segments[0] === 'v') {
-						const vert = [
-							segments[1] * 1,
-							segments[2] * 1,
-							segments[3] * 1
-						]
-						this.verts.push(vert)
-						const sphere = new THREE.Mesh( geometry, material )
-						sphere.position.set(vert[0], vert[1], vert[2])
-						group.add(sphere)
-					}
-				})
-				const min = this.verts[0].slice()
-				const max = this.verts[0].slice()
-				this.verts.forEach((vert) => {
-					min[0] = Math.min(min[0], vert[0])
-					min[1] = Math.min(min[1], vert[1])
-					min[2] = Math.min(min[2], vert[2])
-					max[0] = Math.max(max[0], vert[0])
-					max[1] = Math.max(max[1], vert[1])
-					max[2] = Math.max(max[2], vert[2])
-				})
-				const scale = 2 / Math.max(
-					Math.abs(min[0]),
-					Math.abs(min[1]),
-					Math.abs(min[2]),
-					Math.abs(max[0]),
-					Math.abs(max[1]),
-					Math.abs(max[2])
-				)
-				const vertScale = 1 / scale / 20
-				geometry.scale(vertScale, vertScale, vertScale)
-				group.scale.set(scale, scale, scale)
+			file.text().then(this.processObjText)
+		},
+		processObjText (text) {
+			geometry = new THREE.SphereGeometry( 1, 4, 2 )
+			// ...is this really the best way to empty the group?
+			group.children = []
+			this.verts = []
+			const lines = text.replace(/\r/g, '').split('\n')
+			lines.forEach((line) => {
+				const segments = line.split(' ')
+				if (segments[0] === 'v') {
+					const vert = [
+						segments[1] * 1,
+						segments[2] * 1,
+						segments[3] * 1
+					]
+					this.verts.push(vert)
+					// a unique material per object because that's the easiest way for each shape to have its own color
+					material = new THREE.MeshBasicMaterial( { color: 0xffff00 } )
+					const sphere = new THREE.Mesh( geometry, material )
+					sphere.position.set(vert[0], vert[1], vert[2])
+					group.add(sphere)
+				}
 			})
+			const min = this.verts[0].slice()
+			const max = this.verts[0].slice()
+			this.verts.forEach((vert) => {
+				min[0] = Math.min(min[0], vert[0])
+				min[1] = Math.min(min[1], vert[1])
+				min[2] = Math.min(min[2], vert[2])
+				max[0] = Math.max(max[0], vert[0])
+				max[1] = Math.max(max[1], vert[1])
+				max[2] = Math.max(max[2], vert[2])
+			})
+			const scale = 2 / Math.max(
+				Math.abs(min[0]),
+				Math.abs(min[1]),
+				Math.abs(min[2]),
+				Math.abs(max[0]),
+				Math.abs(max[1]),
+				Math.abs(max[2])
+			)
+			const vertScale = 1 / scale / 20
+			geometry.scale(vertScale, vertScale, vertScale)
+			group.scale.set(scale, scale, scale)
 		},
 		handleSubmit () {
 			console.log(this.file)
+		},
+		submitEquation () {
+			try {
+				vertProcessingFunction = new Function('config', `
+					const { position, time } = config
+					${this.equation}
+				`)
+			} catch (e) {
+				vertProcessingFunction = null
+				console.error(e)
+			}
 		}
 	}
 })
 
-app.mount('#controls')
+const appComponent = app.mount('#controls')
+
+// add goat
+appComponent.processObjText(window.defaultShape)
+appComponent.submitEquation()
+
+// TODO: Add https://www.theatrejs.com/ for timeline control or something

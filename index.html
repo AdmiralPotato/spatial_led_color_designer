@@ -6,48 +6,7 @@
 		  content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Spatial LED Color Designer</title>
-	<style>
-		* {
-			margin: 0;
-			padding: 0;
-			border: 0;
-			vertical-align: top;
-			color: inherit;
-			line-height: inherit;
-			font-size: inherit;
-			font-family: inherit;
-			font-weight: inherit;
-		}
-		html,
-		body,
-		canvas {
-			height: 100%;
-			width: 100%;
-		}
-		body {
-			background-color: #000;
-			color: #9f0;
-			line-height: 16px;
-			font-size: 10px;
-			font-family: monaco, monospace;
-			font-weight: normal;
-		}
-		canvas {
-			position: absolute;
-			z-index: 0;
-		}
-		#controls {
-			padding: 16px;
-			position: relative;
-			z-index: 1;
-		}
-		input {
-			padding: 8px;
-			margin: 8px;
-			background-color: #333;
-			border: 1px solid #666;
-		}
-	</style>
+	<link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 	<canvas id="eyyyyy"></canvas>
@@ -68,9 +27,31 @@
 				/>
 			</div>
 		</form>
+		<form
+			id="equations"
+			@submit.prevent="submitEquation"
+		>
+			<div>
+				<label>
+					<span>Equation</span>
+					<textarea
+						v-model="equation"
+						rows="10"
+						cols="60"
+					></textarea>
+				</label>
+			</div>
+			<div>
+				<input
+					type="submit"
+					value="Process Equation"
+				/>
+			</div>
+		</form>
 	</div>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.33/vue.global.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.152.2/three.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.47/vue.global.min.js"></script>
+	<script src="./default_shape.js"></script>
 	<script src="./index.js"></script>
 </body>
 </html>
