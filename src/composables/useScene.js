@@ -4,7 +4,7 @@ import {
 	Scene,
 	DirectionalLight,
 	HemisphereLight,
-	Fog,
+	// Fog,
 	Vector3,
 	Vector2,
 	SphereGeometry,
@@ -13,6 +13,7 @@ import {
 	Group,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { ref } from 'vue';
 
 const canvas = document.getElementById('eyyyyy');
 const renderer = new WebGLRenderer({
@@ -31,7 +32,7 @@ scene.add(directionalLight);
 
 const light = new HemisphereLight(0xcefeff, 0xb3eaf0, 0.5);
 scene.add(light);
-scene.fog = new Fog('#262626', 7, 9);
+// scene.fog = new Fog('#262626', 7, 9);
 
 camera.position.set(8, 0, 0);
 camera.lookAt(new Vector3(0, 0, 0));
@@ -137,7 +138,7 @@ const processObjText = (text) => {
 	return verts;
 };
 
-const submitEquation = (equationText) => {
+const processEquation = (equationText) => {
 	try {
 		vertProcessingFunction = new Function(
 			'config',
@@ -154,7 +155,7 @@ const submitEquation = (equationText) => {
 
 export default () => {
 	return {
-		submitEquation,
+		processEquation,
 		processObjText,
 	};
 };

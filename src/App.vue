@@ -1,61 +1,49 @@
-<script>
+<script setup>
 import useScene from '@/composables/useScene';
 import defaultShape from './default_shape.js';
+import { computed, ref } from 'vue';
+import { useLocalStorage } from '@vueuse/core';
 
-const { submitEquation, processObjText } = useScene();
+const { processEquation, processObjText } = useScene();
 
-export default {
-	data() {
-		return {
-			verts: [],
-			file: null,
-			equation: `return [
+const defaultEquationValue = `return [
   Math.cos(((position.z + position.y) * 1) + (time * 4)) * 0.5 + 0.5,
   0,
   Math.cos(((position.x + position.y) * 0.5) + (time * 2)) * 0.5 + 0.5
-]`,
-		};
-	},
-	computed: {
-		vertCount() {
-			return this.verts.length;
-		},
-	},
-	created() {
-		// add goat
-		this.processObjText(defaultShape);
-		this.submitEquation();
-	},
-	methods: {
-		setFile(event) {
-			const file = event.target.files[0];
-			file.text().then(this.processObjText);
-		},
-		processObjText(text) {
-			this.verts = processObjText(text);
-		},
-		handleSubmit() {
-			console.log(this.file);
-		},
-		submitEquation() {
-			submitEquation(this.equation);
-		},
-	},
+]`;
+
+const verts = ref([]);
+const lastUploadedObjText = useLocalStorage('lastUploadedObjText', ref(defaultShape));
+const equation = useLocalStorage('equation', ref(defaultEquationValue));
+
+const vertCount = computed(() => verts.value.length);
+
+const ingestObjText = (text) => {
+	lastUploadedObjText.value = text;
+	verts.value = processObjText(text);
 };
+const submitEquation = () => {
+	processEquation(equation.value);
+};
+const setFile = (event) => {
+	const file = event.target.files[0];
+	file.text().then(ingestObjText);
+};
+
+// add goat
+ingestObjText(lastUploadedObjText.value);
+submitEquation(equation.value);
 </script>
 
 <template>
 	<div id="controls">
 		<div>vertCount: {{ vertCount }}</div>
-		<form @submit.prevent="handleSubmit">
+		<form @submit.prevent="">
 			<div>
 				<input
 					type="file"
 					@input="setFile"
 				/>
-			</div>
-			<div>
-				<input type="submit" />
 			</div>
 		</form>
 		<form

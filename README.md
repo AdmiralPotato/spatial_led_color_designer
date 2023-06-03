@@ -7,11 +7,12 @@ A web tool to create animations for RGB LEDs that are arranged in patterns that 
 - [ ] Animated patterns based on function expressions
 	- [x] Get function expressions animating
 	- [x] Add click/drag camera controls
-	- [ ] Use localStorage persistence of last uploaded model
+	- [x] Use localStorage persistence of last uploaded model
 	- [ ] Add controls for frame range TO export
 	- [ ] Add controls for frame RATE
 	- [ ] Explore what some nice output formats are
 	- [ ] Export to frame sequence
+	- [ ] Ability to reset to default equation
 
 ### Redactd's feature wishlist
 
@@ -37,6 +38,10 @@ Here are some feature requests, listed in order of increasing difficulty:
 		- [ ] UV
 		- [ ] In-browser
 	- [ ] Static texture first
+		- [ ] Show manipulators
+		- [ ] Add a toggle to hide all the non-light elements in the 3d space
+		- [ ] Show projection vector
+		- [ ] Show transparent plane with the texture image on it parented to the manipulators
 	- [ ] Animated texture next
 		- [ ] Framerate control
 
