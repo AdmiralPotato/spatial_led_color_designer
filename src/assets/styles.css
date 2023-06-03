@@ -32,7 +32,8 @@ canvas {
 	position: relative;
 	z-index: 1;
 }
-input, textarea {
+input,
+textarea {
 	padding: 8px;
 	margin: 8px;
 	background-color: #333;
