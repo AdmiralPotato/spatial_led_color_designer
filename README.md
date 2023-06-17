@@ -9,8 +9,10 @@ A web tool to create animations for RGB LEDs that are arranged in patterns that 
 	- [x] Add click/drag camera controls
 	- [x] Use localStorage persistence of last uploaded model
 	- [x] Get build/deploy working
-	- [ ] Add controls for frame range TO export
-	- [ ] Add controls for frame RATE
+	- [x] Add controls for frame range TO export
+	- [x] Add controls for frame RATE
+	- [ ] Add timeline to scrub along
+	- [x] Add pause/play buttons
 	- [ ] Explore what some nice output formats are
 	- [ ] Export to frame sequence
 	- [ ] Ability to reset to default equation

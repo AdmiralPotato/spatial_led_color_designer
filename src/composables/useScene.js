@@ -13,7 +13,9 @@ import {
 	Group,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { ref } from 'vue';
+import useTimeline from '@/composables/useTimeline';
+
+const { currentFrame, framesPerSecond } = useTimeline();
 
 const canvas = document.getElementById('eyyyyy');
 const renderer = new WebGLRenderer({
@@ -74,7 +76,8 @@ group.add(sphere);
 
 let vertProcessingFunction = null;
 let go = true;
-const loop = (time) => {
+const loop = () => {
+	const animationProgress = currentFrame.value / framesPerSecond.value;
 	if (go) {
 		requestAnimationFrame(loop);
 		resize();
@@ -84,7 +87,7 @@ const loop = (time) => {
 				mesh.material.color.fromArray(
 					vertProcessingFunction({
 						position: mesh.position,
-						time: time * 0.001,
+						time: animationProgress,
 					}),
 				);
 			});

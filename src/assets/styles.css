@@ -8,6 +8,7 @@
 	font-size: inherit;
 	font-family: inherit;
 	font-weight: inherit;
+	box-sizing: border-box;
 }
 html,
 body,
@@ -47,7 +48,8 @@ label > textarea {
 }
 
 #equations {
-	position: fixed;
-	bottom: 0;
-	left: 0;
+	position: relative;
+	background-color: #333;
+	padding: 8px;
+	border-top: 1px solid #444;
 }
