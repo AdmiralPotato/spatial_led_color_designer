@@ -17,9 +17,6 @@ const previousFrame = () => {
 		currentFrame.value = endFrame.value;
 	}
 };
-const tickFunction = () => {
-	advanceFrame();
-};
 let interval = null;
 watchEffect(() => {
 	const playing = isPlaying.value;
@@ -28,7 +25,7 @@ watchEffect(() => {
 		clearInterval(interval);
 	}
 	if (playing) {
-		interval = setInterval(tickFunction, 1000 / fps);
+		interval = setInterval(advanceFrame, 1000 / fps);
 	}
 });
 

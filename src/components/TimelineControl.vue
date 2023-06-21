@@ -1,11 +1,27 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, onBeforeUnmount, ref } from 'vue';
 import useTimeline from '@/composables/useTimeline';
 
 const { isPlaying, startFrame, endFrame, currentFrame, framesPerSecond } = useTimeline();
 
 const numberOfBars = computed(() => {
-	return endFrame.value - startFrame.value + 4;
+	return endFrame.value - startFrame.value + 7;
+});
+const isMouseDown = ref(false);
+const setCurrentFrame = (frameIndex) => {
+	currentFrame.value = frameIndex;
+};
+const setCurrentFrameOnMouseOver = (frameIndex) => {
+	if (isMouseDown.value) {
+		setCurrentFrame(frameIndex);
+	}
+};
+const mouseupOutsideTimelineHandler = () => {
+	isMouseDown.value = false;
+};
+document.body.addEventListener('mouseup', mouseupOutsideTimelineHandler);
+onBeforeUnmount(() => {
+	document.body.removeEventListener('mouseup', mouseupOutsideTimelineHandler);
 });
 </script>
 
@@ -51,7 +67,11 @@ const numberOfBars = computed(() => {
 			</div>
 		</form>
 		<div class="timeline">
-			<div class="bars">
+			<div
+				class="bars"
+				@mousedown="isMouseDown = true"
+				@mouseup="isMouseDown = false"
+			>
 				<span
 					v-for="(_, index) in numberOfBars"
 					class="bar"
@@ -63,8 +83,10 @@ const numberOfBars = computed(() => {
 					:style="{
 						width: 100 / numberOfBars + '%',
 					}"
+					@mousedown="setCurrentFrame(index - 2)"
+					@mousemove="setCurrentFrameOnMouseOver(index - 2)"
 				>
-					<span class="hover">{{ index }}</span>
+					<span class="hover">{{ index - 2 }}</span>
 				</span>
 			</div>
 		</div>
@@ -100,19 +122,22 @@ const numberOfBars = computed(() => {
 	border-right: 1px solid #333;
 	position: relative;
 	overflow: visible;
+	user-select: none;
 }
 .TimelineControl .bars .bar .hover {
 	display: none;
-}
-.TimelineControl .bars .bar:hover .hover {
-	display: block;
 	position: absolute;
-	top: 0;
+	top: -16px;
 	background-color: rgba(0, 0, 0, 0.5);
 	border-radius: 4px;
-	padding: 4px;
-	width: 32px;
-	height: 16px;
+	padding: 3px;
+	font-size: 10px;
+	line-height: 10px;
+	pointer-events: none;
+}
+.TimelineControl .bars .bar.active .hover,
+.TimelineControl .bars .bar:hover .hover {
+	display: block;
 }
 .TimelineControl .bars .bar.darker {
 	background-color: #222;
