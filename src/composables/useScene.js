@@ -14,8 +14,10 @@ import {
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import useTimeline from '@/composables/useTimeline';
+import useColorFunction from '@/composables/useColorFunction';
 
 const { currentFrame, framesPerSecond } = useTimeline();
+const { getColorFunction } = useColorFunction();
 
 const canvas = document.getElementById('eyyyyy');
 const renderer = new WebGLRenderer({
@@ -74,7 +76,6 @@ const group = new Group();
 scene.add(group);
 group.add(sphere);
 
-let vertProcessingFunction = null;
 let go = true;
 const loop = () => {
 	const animationProgress = currentFrame.value / framesPerSecond.value;
@@ -82,10 +83,14 @@ const loop = () => {
 		requestAnimationFrame(loop);
 		resize();
 		controls.update();
-		if (vertProcessingFunction) {
-			group.children.forEach((mesh) => {
+		const vertexColorFunction = getColorFunction();
+		if (vertexColorFunction) {
+			const count = group.children.length;
+			group.children.forEach((mesh, index) => {
 				mesh.material.color.fromArray(
-					vertProcessingFunction({
+					vertexColorFunction({
+						index,
+						count,
 						position: mesh.position,
 						time: animationProgress,
 					}),
@@ -141,24 +146,8 @@ const processObjText = (text) => {
 	return verts;
 };
 
-const processEquation = (equationText) => {
-	try {
-		vertProcessingFunction = new Function(
-			'config',
-			`
-			const { position, time } = config
-			${equationText}
-			`,
-		);
-	} catch (e) {
-		vertProcessingFunction = null;
-		console.error(e);
-	}
-};
-
 export default () => {
 	return {
-		processEquation,
 		processObjText,
 	};
 };

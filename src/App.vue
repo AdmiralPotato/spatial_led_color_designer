@@ -5,28 +5,19 @@ import { computed, ref } from 'vue';
 import { useLocalStorage } from '@vueuse/core';
 import TimelineControl from '@/components/TimelineControl.vue';
 import useTimeline from '@/composables/useTimeline';
+import ColorFunctionControl from '@/components/ColorFunctionControl.vue';
 
-const { processEquation, processObjText } = useScene();
+const { processObjText } = useScene();
 const { advanceFrame, previousFrame, isPlaying } = useTimeline();
-
-const defaultEquationValue = `return [
-  Math.cos(((position.z + position.y) * 1) + (time * 4)) * 0.5 + 0.5,
-  0,
-  Math.cos(((position.x + position.y) * 0.5) + (time * 2)) * 0.5 + 0.5
-]`;
 
 const verts = ref([]);
 const lastUploadedObjText = useLocalStorage('lastUploadedObjText', ref(defaultShape));
-const equation = useLocalStorage('equation', ref(defaultEquationValue));
 
 const vertCount = computed(() => verts.value.length);
 
 const ingestObjText = (text) => {
 	lastUploadedObjText.value = text;
 	verts.value = processObjText(text);
-};
-const submitEquation = () => {
-	processEquation(equation.value);
 };
 const setFile = (event) => {
 	const file = event.target.files[0];
@@ -35,7 +26,6 @@ const setFile = (event) => {
 
 // add goat
 ingestObjText(lastUploadedObjText.value);
-submitEquation(equation.value);
 const showEquation = ref(false);
 
 const keyHandlerMap = {
@@ -82,28 +72,7 @@ window.addEventListener('keydown', (event) => {
 			</div>
 		</form>
 		<div class="bottom-panel">
-			<form
-				v-if="showEquation"
-				id="equations"
-				@submit.prevent="submitEquation"
-			>
-				<div>
-					<label>
-						<span>Equation</span>
-						<textarea
-							v-model="equation"
-							rows="10"
-							cols="80"
-						></textarea>
-					</label>
-				</div>
-				<div>
-					<input
-						type="submit"
-						value="Process Equation"
-					/>
-				</div>
-			</form>
+			<ColorFunctionControl v-if="showEquation" />
 			<TimelineControl />
 		</div>
 	</div>

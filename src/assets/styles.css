@@ -34,11 +34,22 @@ canvas {
 	z-index: 1;
 }
 input,
+button,
 textarea {
 	padding: 8px;
 	margin: 8px;
 	background-color: #333;
 	border: 1px solid #666;
+}
+input[type="submit"] {
+	background-color: #555;
+}
+
+input[type="submit"]:hover,
+button:hover {
+	border: 1px solid #888;
+	background-color: #444;
+	cursor: pointer;
 }
 
 label > span,
