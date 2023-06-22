@@ -7,13 +7,14 @@ import TimelineControl from '@/components/TimelineControl.vue';
 import useTimeline from '@/composables/useTimeline';
 import ColorFunctionControl from '@/components/ColorFunctionControl.vue';
 
-const { processObjText } = useScene();
+const { processOutputColors, processObjText } = useScene();
 const { advanceFrame, previousFrame, isPlaying } = useTimeline();
 
 const verts = ref([]);
 const lastUploadedObjText = useLocalStorage('lastUploadedObjText', ref(defaultShape));
 
 const vertCount = computed(() => verts.value.length);
+const processedOutput = ref([]);
 
 const ingestObjText = (text) => {
 	lastUploadedObjText.value = text;
@@ -71,6 +72,17 @@ window.addEventListener('keydown', (event) => {
 				/>
 			</div>
 		</form>
+		<form @submit.prevent="processedOutput = processOutputColors()">
+			<div>
+				<input
+					type="submit"
+					value="Process Output"
+				/>
+			</div>
+		</form>
+		<p>
+			Processed Output <code>{{ processedOutput }}</code>
+		</p>
 		<div class="bottom-panel">
 			<ColorFunctionControl v-if="showEquation" />
 			<TimelineControl />

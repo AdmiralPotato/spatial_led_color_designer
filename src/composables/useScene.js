@@ -16,7 +16,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import useTimeline from '@/composables/useTimeline';
 import useColorFunction from '@/composables/useColorFunction';
 
-const { currentFrame, framesPerSecond } = useTimeline();
+const { endFrame, startFrame, currentFrame } = useTimeline();
 const { getColorFunction } = useColorFunction();
 
 const canvas = document.getElementById('eyyyyy');
@@ -78,7 +78,8 @@ group.add(sphere);
 
 let go = true;
 const loop = () => {
-	const animationProgress = currentFrame.value / framesPerSecond.value;
+	const totalDuration = endFrame.value - startFrame.value + 1;
+	const animationProgress = (startFrame.value + currentFrame.value / totalDuration) % 1;
 	if (go) {
 		requestAnimationFrame(loop);
 		resize();
@@ -146,8 +147,32 @@ const processObjText = (text) => {
 	return verts;
 };
 
+const processOutputColors = () => {
+	const totalDuration = endFrame.value - startFrame.value + 1;
+	const vertexColorFunction = getColorFunction();
+	const result = [];
+	for (let currentFrame = 0; currentFrame < totalDuration; currentFrame++) {
+		const animationProgress = (startFrame.value + currentFrame / totalDuration) % 1;
+		if (vertexColorFunction) {
+			const count = group.children.length;
+			group.children.forEach((mesh, index) => {
+				result.push(
+					...vertexColorFunction({
+						index,
+						count,
+						position: mesh.position,
+						time: animationProgress,
+					}).map((n) => Math.round(n * 255)),
+				);
+			});
+		}
+	}
+	return result;
+};
+
 export default () => {
 	return {
 		processObjText,
+		processOutputColors,
 	};
 };
