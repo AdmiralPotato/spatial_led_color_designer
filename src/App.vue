@@ -6,15 +6,16 @@ import { useLocalStorage } from '@vueuse/core';
 import TimelineControl from '@/components/TimelineControl.vue';
 import useTimeline from '@/composables/useTimeline';
 import ColorFunctionControl from '@/components/ColorFunctionControl.vue';
+import useProcessedOutput from '@/composables/useProcessedOutput';
 
-const { processOutputColors, processObjText } = useScene();
+const { processObjText } = useScene();
 const { advanceFrame, previousFrame, isPlaying } = useTimeline();
+const { outputName, processedDownloadLink, processOutput } = useProcessedOutput();
 
 const verts = ref([]);
 const lastUploadedObjText = useLocalStorage('lastUploadedObjText', ref(defaultShape));
 
 const vertCount = computed(() => verts.value.length);
-const processedOutput = ref([]);
 
 const ingestObjText = (text) => {
 	lastUploadedObjText.value = text;
@@ -72,7 +73,16 @@ window.addEventListener('keydown', (event) => {
 				/>
 			</div>
 		</form>
-		<form @submit.prevent="processedOutput = processOutputColors()">
+		<form @submit.prevent="processOutput">
+			<div>
+				<label>
+					<span>Output object name (probably use snake case or camel case)</span>
+					<input
+						type="text"
+						v-model="outputName"
+					/>
+				</label>
+			</div>
 			<div>
 				<input
 					type="submit"
@@ -80,8 +90,10 @@ window.addEventListener('keydown', (event) => {
 				/>
 			</div>
 		</form>
-		<p>
-			Processed Output <code>{{ processedOutput }}</code>
+		<p v-if="processedDownloadLink">
+			<a v-bind="processedDownloadLink"
+				>Download <code>{{ outputName }}.h</code></a
+			>
 		</p>
 		<div class="bottom-panel">
 			<ColorFunctionControl v-if="showEquation" />
