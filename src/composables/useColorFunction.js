@@ -8,16 +8,16 @@ const presets = [
 return [
   Math.cos(((position.x + position.y) * 1) + (time * tau)) * 0.5 + 0.5,
   0,
-  Math.cos(((position.z + position.y) * 0.5) + (time * pi)) * 0.5 + 0.5
+  Math.cos(((position.z + position.y) * 0.5) + (time * tau)) * 0.5 + 0.5
 ]`.trim(),
 	},
 	{
 		label: 'Positional Rainbow',
 		value: `
 return [
-  Math.cos(((position.z + position.x) * 1 ) + (time * pi)) * 0.5 + 0.5,
-  Math.cos(((position.z + position.y) * 2) + (time * tau)) * 0.5 + 0.5,
-  Math.cos(((position.x + position.y) * 0.5) + (time * 3 * pi)) * 0.5 + 0.5
+  Math.cos(((position.z + position.x) * 1 ) + (time * tau)) * 0.5 + 0.5,
+  Math.cos(((position.z + position.y) * 2) + (time * 2 * tau)) * 0.5 + 0.5,
+  Math.cos(((position.x + position.y) * 0.5) + (time * 3 * tau)) * 0.5 + 0.5
 ]`.trim(),
 	},
 	{
