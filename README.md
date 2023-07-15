@@ -14,6 +14,7 @@ A web tool to create animations for RGB LEDs that are arranged in patterns that 
 	- [x] Add timeline to scrub along
 	- [x] Add pause/play buttons
 	- [ ] Explore what some nice output formats are
+	- [ ] Animations presets should include duration/framerate
 	- [x] Export to frame sequence
 	- [x] Ability to reset to default equation
 

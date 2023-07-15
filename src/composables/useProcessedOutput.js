@@ -1,8 +1,10 @@
 import { ref } from 'vue';
 import useScene from '@/composables/useScene';
 import useTimeline from '@/composables/useTimeline';
+import useColorFunction from '@/composables/useColorFunction';
 const { processOutputColors } = useScene();
 const { startFrame, endFrame, framesPerSecond } = useTimeline();
+const { colorFunctionString } = useColorFunction();
 
 const processedDownloadLink = ref(null);
 const outputName = ref('');
@@ -34,6 +36,12 @@ const formatOutputAsCHeader = (data) => {
 	});
 	return `#ifndef ${NAME}_H
 #define ${NAME}_H
+/*
+Generated from the following:
+----
+${colorFunctionString.value}
+*/
+
 static const uint32_t ${name}_led_count = ${numLights};
 static const uint32_t ${name}_frame_size = ${numLights * 3};
 static const uint32_t ${name}_frame_count = ${numFrames};
