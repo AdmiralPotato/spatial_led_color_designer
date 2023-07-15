@@ -37,10 +37,12 @@ input,
 button,
 textarea {
 	padding: 8px;
-	margin: 8px;
+	margin: 8px 4px;
 	background-color: #333;
 	border: 1px solid #666;
 }
+
+button.save,
 input[type="submit"] {
 	background-color: #555;
 }
@@ -50,6 +52,10 @@ button:hover {
 	border: 1px solid #888;
 	background-color: #444;
 	cursor: pointer;
+}
+
+.delete-button {
+	margin-left: -5px;
 }
 
 label > span,

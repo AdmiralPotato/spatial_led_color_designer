@@ -33,6 +33,7 @@ return [
 ];
 
 const colorFunctionString = useLocalStorage('colorFunctionString', ref(presets[0].value));
+const userPresets = useLocalStorage('userPresets', ref([]));
 
 let currentColorFunction = () => [1, 1, 1];
 const processColorFunction = () => {
@@ -71,11 +72,31 @@ const processColorFunction = () => {
 
 processColorFunction();
 
+const removePresetByName = (name) => {
+	if (window.confirm(`Are you sure you want to delete the user pattern:\n"${name}"?`)) {
+		userPresets.value = userPresets.value.filter((item) => item.label !== name);
+	}
+};
+
+const saveCurrentPattern = () => {
+	const name = window.prompt(`What would you like to name this preset?`);
+	if (name) {
+		console.log('What is userPresets?', userPresets);
+		userPresets.value.push({
+			label: name,
+			value: colorFunctionString.value,
+		});
+	}
+};
+
 export default () => {
 	return {
 		presets,
+		userPresets,
 		colorFunctionString,
 		processColorFunction,
+		saveCurrentPattern,
+		removePresetByName,
 		getColorFunction() {
 			return currentColorFunction;
 		},
