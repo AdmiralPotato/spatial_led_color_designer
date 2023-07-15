@@ -147,6 +147,8 @@ const processObjText = (text) => {
 	return verts;
 };
 
+// never go negative
+const clamp = (n) => (n >= 0 ? n : 0);
 const processOutputColors = () => {
 	const totalDuration = endFrame.value - startFrame.value + 1;
 	const vertexColorFunction = getColorFunction();
@@ -162,7 +164,7 @@ const processOutputColors = () => {
 						count,
 						position: mesh.position,
 						time: animationProgress,
-					}).map((n) => Math.round(n * 255)),
+					}).map((n) => clamp(Math.round(n * 255))),
 				);
 			});
 		}
