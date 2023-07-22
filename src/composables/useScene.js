@@ -147,8 +147,8 @@ const processObjText = (text) => {
 	return verts;
 };
 
-// never go negative
-const clamp = (n) => (n >= 0 ? n : 0);
+// never go negative, never more than 255;
+const clamp = (n) => (n >= 0 ? Math.min(255, n) : 0);
 const processOutputColors = () => {
 	const totalDuration = endFrame.value - startFrame.value + 1;
 	const vertexColorFunction = getColorFunction();
