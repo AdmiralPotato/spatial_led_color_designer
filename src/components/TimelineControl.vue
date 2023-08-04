@@ -96,24 +96,32 @@ onBeforeUnmount(() => {
 <style>
 .TimelineControl {
 	background-color: #333;
-	padding: 8px;
 	border-top: 1px solid #444;
 }
 .TimelineControl label {
+	position: relative;
 	display: inline-block;
 }
 .TimelineControl label span {
-	padding: 0 2px;
-	font-size: 8px;
+	position: absolute;
+	top: 4px;
+	padding: 4px 4px 4px 0;
+	font-size: 10px;
+	line-height: 1rem;
+	width: 2.5rem;
+	text-align: right;
+	border-right: 1px solid #666;
+	background-color: #444;
 }
 .TimelineControl label input {
-	padding: 0 2px;
-	width: 48px;
+	padding: 0 2px 0 2.5rem;
+	width: 96px;
 	height: 24px;
 }
 .TimelineControl .bars {
 	height: 32px;
 	background-color: #222;
+	border-top: 1px solid #222;
 }
 .TimelineControl .bars .bar {
 	display: inline-block;

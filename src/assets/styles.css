@@ -30,14 +30,17 @@ canvas {
 }
 #controls {
 	padding: 16px;
-	position: relative;
+	position: absolute;
 	z-index: 1;
+	top: 0;
+	left: 0;
 }
 input,
 button,
+select,
 textarea {
-	padding: 8px;
-	margin: 8px 4px;
+	padding: 4px;
+	margin: 4px 2px;
 	background-color: #333;
 	border: 1px solid #666;
 }
