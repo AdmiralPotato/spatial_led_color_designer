@@ -10,7 +10,8 @@ import useProcessedOutput from '@/composables/useProcessedOutput';
 
 const { processObjText } = useScene();
 const { advanceFrame, previousFrame, isPlaying } = useTimeline();
-const { outputName, processedDownloadLink, processOutput } = useProcessedOutput();
+const { outputName, outputType, outputTypes, processedDownloadLink, processOutput } =
+	useProcessedOutput();
 
 const verts = ref([]);
 const lastUploadedObjText = useLocalStorage('lastUploadedObjText', ref(defaultShape));
@@ -84,6 +85,19 @@ window.addEventListener('keydown', (event) => {
 				</label>
 			</div>
 			<div>
+				<label>
+					<span>Output type</span>
+					<select v-model="outputType">
+						<option
+							v-for="item in outputTypes"
+							:key="item"
+						>
+							{{ item }}
+						</option>
+					</select>
+				</label>
+			</div>
+			<div>
 				<input
 					type="submit"
 					value="Process Output"
@@ -92,7 +106,7 @@ window.addEventListener('keydown', (event) => {
 		</form>
 		<p v-if="processedDownloadLink">
 			<a v-bind="processedDownloadLink"
-				>Download <code>{{ outputName }}.h</code></a
+				>Download <code>{{ processedDownloadLink.download }}</code></a
 			>
 		</p>
 		<div class="bottom-panel">

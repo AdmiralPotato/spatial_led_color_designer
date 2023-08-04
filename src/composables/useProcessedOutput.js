@@ -55,15 +55,18 @@ ${linesSegmentedByFrame.join('\n\n')}
 `;
 };
 
+const formatOutputAsBin = (data) => {
+	return Uint8Array.from(data);
+};
+
 let previousUrl;
 const prepareDownload = (rawData, name) => {
 	let data = rawData;
 	let type = 'octet/stream';
 	if (typeof data === 'string') {
-		data = [data];
 		type = 'text/plain';
 	}
-	const blob = new Blob(data, { type });
+	const blob = new Blob([data], { type });
 	const url = window.URL.createObjectURL(blob);
 	if (previousUrl) {
 		window.URL.revokeObjectURL(previousUrl);
@@ -75,15 +78,36 @@ const prepareDownload = (rawData, name) => {
 	};
 };
 
+const outputTypeMap = {
+	cHeader(dataArray) {
+		const cHeaderText = formatOutputAsCHeader(dataArray);
+		console.log('cHeaderText', cHeaderText);
+		return {
+			fileName: outputName.value + '.h',
+			data: cHeaderText,
+		};
+	},
+	bin(dataArray) {
+		const data = formatOutputAsBin(dataArray);
+		console.log('binData', data);
+		return {
+			fileName: outputName.value + '.bin',
+			data,
+		};
+	},
+};
+let outputType = ref('cHeader');
+
 export default () => {
 	return {
 		outputName,
+		outputType,
+		outputTypes: Object.keys(outputTypeMap),
 		processedDownloadLink,
 		processOutput: () => {
 			const dataArray = processOutputColors();
-			const cHeaderText = formatOutputAsCHeader(dataArray);
-			console.log('cHeaderText', cHeaderText);
-			processedDownloadLink.value = prepareDownload(cHeaderText, outputName.value + '.h');
+			const { data, fileName } = outputTypeMap[outputType.value](dataArray);
+			processedDownloadLink.value = prepareDownload(data, fileName);
 		},
 	};
 };
