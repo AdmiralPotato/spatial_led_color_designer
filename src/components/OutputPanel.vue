@@ -8,17 +8,18 @@ const { outputName, outputType, outputTypes, processedDownloadLink, processOutpu
 
 <template>
 	<AccordionPanel title="Output">
+		<p>This section allows you to generate static output in several different formats.</p>
 		<form @submit.prevent="processOutput">
-			<div>
+			<div class="form-control">
 				<label>
-					<span>Output object name (probably use snake case or camel case)</span>
+					<span>Output Variable Name Prefix</span>
 					<input
 						type="text"
 						v-model="outputName"
 					/>
 				</label>
 			</div>
-			<div>
+			<div class="form-control">
 				<label>
 					<span>Output type</span>
 					<select v-model="outputType">
@@ -46,4 +47,4 @@ const { outputName, outputType, outputTypes, processedDownloadLink, processOutpu
 	</AccordionPanel>
 </template>
 
-<style scoped></style>
+<style></style>

@@ -20,8 +20,7 @@ const isOpen = getPanelState(props.title);
 		}"
 	>
 		<h3>
-			<button @click="isOpen = !isOpen">{{ isOpen ? 'v' : '>' }}</button>
-			<span>{{ title }}</span>
+			<button @click="isOpen = !isOpen">{{ isOpen ? 'v' : '>' }} {{ title }}</button>
 		</h3>
 		<div
 			class="content"

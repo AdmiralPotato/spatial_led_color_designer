@@ -14,8 +14,21 @@ const {
 
 <template>
 	<AccordionPanel title="Color Function">
+		<p>
+			Here is where you will write a JavaScript function that will be run once per tick for
+			each LED in your input mesh. This function must return an array of Numbers, where the
+			expected value is a float range from 0 to 1. Values outside of this range will be
+			clamped to that range. There are several variables available for use inside this
+			function:
+		</p>
+		<pre class="code">
+position: {x:Number, y:Number, z:Number}
+index: Number  // the index of the LED
+count: Number  // total number of LEDs
+time: Number   // A value in 0 to 1 range</pre
+		>
 		<form @submit.prevent="processColorFunction">
-			<div>
+			<div class="form-control">
 				<label>
 					<span>Vertex Color Function</span>
 					<textarea

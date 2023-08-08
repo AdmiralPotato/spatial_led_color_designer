@@ -10,12 +10,20 @@ const setFile = (event) => {
 </script>
 <template>
 	<AccordionPanel title="Mesh Input">
+		<p>
+			Here, you may input an <code>Wavefront/OBJ</code> 3D model file, where each vertex in
+			your model will be treated as one RGB LED. This file is never sent to any server; all
+			work is done locally in your browser.
+		</p>
 		<form @submit.prevent="">
-			<div>
-				<input
-					type="file"
-					@input="setFile"
-				/>
+			<div class="form-control">
+				<label>
+					<span>OBJ File</span>
+					<input
+						type="file"
+						@input="setFile"
+					/>
+				</label>
 			</div>
 		</form>
 	</AccordionPanel>

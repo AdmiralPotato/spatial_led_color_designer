@@ -22,7 +22,7 @@ canvas {
 }
 body {
 	background-color: #000;
-	color: #9f0;
+	color: #999;
 	line-height: 1.5rem;
 	font-size: 16px;
 	font-family: monaco, monospace;
@@ -36,6 +36,7 @@ input,
 button,
 select,
 textarea {
+	color: #9f0;
 	padding: 2px 4px;
 	margin: 2px 2px;
 	background-color: #333;
@@ -58,6 +59,13 @@ button:hover {
 	cursor: pointer;
 }
 
+.form-control > label {
+	display: block;
+	margin-bottom: 0.5rem;
+	background-color: #252525;
+	padding: 8px;
+}
+
 .delete-button {
 	margin-left: -5px;
 }
@@ -66,4 +74,24 @@ label > span,
 label > input,
 label > textarea {
 	display: block;
+}
+label > span {
+	color: #bbb;
+	font-size: 0.75rem;
+}
+
+code,
+.code {
+	border-radius: 4px;
+	background-color: #0008;
+	padding: 4px 8px;
+}
+code {
+	margin: 0 -4px;
+}
+
+p,
+pre {
+	margin-bottom: 0.5rem;
+	font-size: 0.75rem;
 }

@@ -7,7 +7,7 @@ const { startFrame, endFrame, framesPerSecond } = useTimeline();
 const { colorFunctionString } = useColorFunction();
 
 const processedDownloadLink = ref(null);
-const outputName = ref('');
+const outputName = ref('AnimationName');
 
 const makeSegments = (array, n) => {
 	let [...arr] = array;

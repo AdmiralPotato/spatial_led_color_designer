@@ -3,7 +3,7 @@ import useScene from '@/composables/useScene';
 import { onMounted, ref } from 'vue';
 import TimelineControl from '@/components/TimelineControl.vue';
 import useTimeline from '@/composables/useTimeline';
-import ColorFunctionControl from '@/components/ColorFunctionControl.vue';
+import ColorFunctionPanel from '@/components/ColorFunctionPanel.vue';
 import OutputPanel from '@/components/OutputPanel.vue';
 import MeshInputPanel from '@/components/MeshInputPanel.vue';
 
@@ -75,7 +75,7 @@ onMounted(() => {
 		>
 			<MeshInputPanel />
 			<OutputPanel />
-			<ColorFunctionControl />
+			<ColorFunctionPanel />
 		</div>
 	</div>
 </template>
