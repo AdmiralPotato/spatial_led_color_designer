@@ -29,13 +29,9 @@ onBeforeUnmount(() => {
 	<div class="TimelineControl">
 		<form @submit.prevent="">
 			<div>
-				<label>
-					<span>play</span>
-					<input
-						type="checkbox"
-						v-model="isPlaying"
-					/>
-				</label>
+				<button @click="isPlaying = !isPlaying">
+					<span>play: [{{ isPlaying ? 'x' : ' ' }}]</span>
+				</button>
 				<label>
 					<span title="The beginning of all time">start</span>
 					<input
@@ -102,21 +98,32 @@ onBeforeUnmount(() => {
 	position: relative;
 	display: inline-block;
 }
+.TimelineControl button,
 .TimelineControl label span {
-	position: absolute;
-	top: 4px;
-	padding: 4px 4px 4px 0;
-	font-size: 10px;
+	font-size: 12px;
 	line-height: 1rem;
-	width: 2.5rem;
-	text-align: right;
 	border-right: 1px solid #666;
 	background-color: #444;
 }
+.TimelineControl label span {
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	padding: 3px 4px 3px 0;
+	text-align: right;
+	width: 2.75rem;
+}
+.TimelineControl button span {
+	vertical-align: top;
+}
+.TimelineControl button,
 .TimelineControl label input {
-	padding: 0 2px 0 2.5rem;
+	padding: 0 2px;
 	width: 96px;
 	height: 24px;
+}
+.TimelineControl label input {
+	padding: 0 2px 0 2.85rem;
 }
 .TimelineControl .bars {
 	height: 32px;

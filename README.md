@@ -17,6 +17,9 @@ A web tool to create animations for RGB LEDs that are arranged in patterns that 
 	- [ ] Animations presets should include duration/framerate
 	- [x] Export to frame sequence
 	- [x] Ability to reset to default equation
+	- [x] Panelize it better
+	- [ ] Code syntax highlighting
+	- [ ] Slider to control scale of lights
 
 ### Redactd's feature wishlist
 

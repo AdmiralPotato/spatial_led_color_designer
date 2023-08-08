@@ -1,39 +1,25 @@
 <script setup>
 import useScene from '@/composables/useScene';
-import defaultShape from './default_shape.js';
-import { computed, ref } from 'vue';
-import { useLocalStorage } from '@vueuse/core';
+import { onMounted, ref } from 'vue';
 import TimelineControl from '@/components/TimelineControl.vue';
 import useTimeline from '@/composables/useTimeline';
 import ColorFunctionControl from '@/components/ColorFunctionControl.vue';
-import useProcessedOutput from '@/composables/useProcessedOutput';
+import OutputPanel from '@/components/OutputPanel.vue';
+import MeshInputPanel from '@/components/MeshInputPanel.vue';
 
-const { processObjText } = useScene();
+// even if no other components are mounted to do this work,
+// I want to be sure it's used to start the scene party
+const { vertCount, viewportCanvas } = useScene();
+
 const { advanceFrame, previousFrame, isPlaying } = useTimeline();
-const { outputName, outputType, outputTypes, processedDownloadLink, processOutput } =
-	useProcessedOutput();
 
-const verts = ref([]);
-const lastUploadedObjText = useLocalStorage('lastUploadedObjText', ref(defaultShape));
+const viewportHolder = ref(null);
 
-const vertCount = computed(() => verts.value.length);
-
-const ingestObjText = (text) => {
-	lastUploadedObjText.value = text;
-	verts.value = processObjText(text);
-};
-const setFile = (event) => {
-	const file = event.target.files[0];
-	file.text().then(ingestObjText);
-};
-
-// add goat
-ingestObjText(lastUploadedObjText.value);
-const showEquation = ref(false);
+const showControls = ref(true);
 
 const keyHandlerMap = {
 	'`': () => {
-		showEquation.value = !showEquation.value;
+		showControls.value = !showControls.value;
 	},
 	' ': () => {
 		isPlaying.value = !isPlaying.value;
@@ -61,65 +47,74 @@ window.addEventListener('keydown', (event) => {
 		handler();
 	}
 });
+onMounted(() => {
+	viewportHolder.value.appendChild(viewportCanvas);
+});
 </script>
 
 <template>
-	<div id="controls">
-		<div>vertCount: {{ vertCount }}</div>
-		<form @submit.prevent="">
-			<div>
-				<input
-					type="file"
-					@input="setFile"
-				/>
+	<div id="container">
+		<div id="preview">
+			<div id="viewport">
+				<div
+					id="viewport-holder"
+					ref="viewportHolder"
+				></div>
+				<div id="vert-count">vertCount: {{ vertCount }}</div>
+				<div class="bottom-panel">
+					<div class="panel-toggler">
+						<button @click="showControls = !showControls">Toggle Controls</button>
+					</div>
+				</div>
 			</div>
-		</form>
-		<form @submit.prevent="processOutput">
-			<div>
-				<label>
-					<span>Output object name (probably use snake case or camel case)</span>
-					<input
-						type="text"
-						v-model="outputName"
-					/>
-				</label>
-			</div>
-			<div>
-				<label>
-					<span>Output type</span>
-					<select v-model="outputType">
-						<option
-							v-for="item in outputTypes"
-							:key="item"
-						>
-							{{ item }}
-						</option>
-					</select>
-				</label>
-			</div>
-			<div>
-				<input
-					type="submit"
-					value="Process Output"
-				/>
-			</div>
-		</form>
-		<p v-if="processedDownloadLink">
-			<a v-bind="processedDownloadLink"
-				>Download <code>{{ processedDownloadLink.download }}</code></a
-			>
-		</p>
-		<div class="bottom-panel">
-			<ColorFunctionControl v-if="showEquation" />
 			<TimelineControl />
+		</div>
+		<div
+			id="controls"
+			v-if="showControls"
+		>
+			<MeshInputPanel />
+			<OutputPanel />
+			<ColorFunctionControl />
 		</div>
 	</div>
 </template>
 <style>
+#container {
+	display: flex;
+	height: 100%;
+}
+#preview {
+	position: relative;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	max-height: 100%;
+}
+#viewport {
+	flex-grow: 1;
+	position: relative;
+}
+#vert-count {
+	position: absolute;
+	z-index: 0;
+}
 .bottom-panel {
-	position: fixed;
+	position: absolute;
 	bottom: 0;
 	left: 0;
 	right: 0;
+}
+#controls {
+	width: 50%;
+	min-width: 320px;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	background-color: #333;
+	border-left: 1px solid #444;
+	overflow-y: auto;
+	max-height: 100%;
 }
 </style>

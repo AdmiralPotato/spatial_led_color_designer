@@ -15,16 +15,18 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import useTimeline from '@/composables/useTimeline';
 import useColorFunction from '@/composables/useColorFunction';
+import { computed, ref } from 'vue';
+import { useLocalStorage } from '@vueuse/core';
+import defaultShape from '@/default_shape';
 
 const { endFrame, startFrame, currentFrame } = useTimeline();
 const { getColorFunction } = useColorFunction();
 
-const canvas = document.getElementById('eyyyyy');
 const renderer = new WebGLRenderer({
-	canvas,
 	alpha: true,
 	antialias: true,
 });
+const canvas = renderer.domElement;
 const camera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
 const controls = new OrbitControls(camera, renderer.domElement);
 const scene = new Scene();
@@ -172,9 +174,23 @@ const processOutputColors = () => {
 	return result;
 };
 
+const verts = ref([]);
+const lastUploadedObjText = useLocalStorage('lastUploadedObjText', ref(defaultShape));
+
+const vertCount = computed(() => verts.value.length);
+
+const ingestObjText = (text) => {
+	lastUploadedObjText.value = text;
+	verts.value = processObjText(text);
+};
+
+ingestObjText(lastUploadedObjText.value);
+
 export default () => {
 	return {
-		processObjText,
 		processOutputColors,
+		viewportCanvas: canvas,
+		vertCount,
+		ingestObjText,
 	};
 };

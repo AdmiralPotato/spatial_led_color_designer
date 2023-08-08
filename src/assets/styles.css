@@ -16,6 +16,10 @@ canvas {
 	height: 100%;
 	width: 100%;
 }
+canvas {
+	display: block;
+	position: absolute;
+}
 body {
 	background-color: #000;
 	color: #9f0;
@@ -24,33 +28,30 @@ body {
 	font-family: monaco, monospace;
 	font-weight: normal;
 }
-canvas {
-	position: absolute;
-	z-index: 0;
+#app {
+	height: 100%;
 }
-#controls {
-	padding: 16px;
-	position: absolute;
-	z-index: 1;
-	top: 0;
-	left: 0;
-}
+
 input,
 button,
 select,
 textarea {
-	padding: 4px;
-	margin: 4px 2px;
+	padding: 2px 4px;
+	margin: 2px 2px;
 	background-color: #333;
 	border: 1px solid #666;
+	vertical-align: middle;
+}
+textarea {
+	max-width: 100%;
 }
 
 button.save,
-input[type="submit"] {
+input[type='submit'] {
 	background-color: #555;
 }
 
-input[type="submit"]:hover,
+input[type='submit']:hover,
 button:hover {
 	border: 1px solid #888;
 	background-color: #444;
@@ -65,11 +66,4 @@ label > span,
 label > input,
 label > textarea {
 	display: block;
-}
-
-#equations {
-	position: relative;
-	background-color: #333;
-	padding: 8px;
-	border-top: 1px solid #444;
 }
