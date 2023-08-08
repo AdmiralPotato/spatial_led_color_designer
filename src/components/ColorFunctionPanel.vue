@@ -1,6 +1,9 @@
 <script setup>
 import useColorFunction from '@/composables/useColorFunction';
 import AccordionPanel from '@/components/AccordionPanel.vue';
+import { Codemirror } from 'vue-codemirror';
+import { javascript } from '@codemirror/lang-javascript';
+import { oneDark } from '@codemirror/theme-one-dark';
 
 const {
 	presets,
@@ -10,14 +13,16 @@ const {
 	saveCurrentPattern,
 	processColorFunction,
 } = useColorFunction();
+
+const extensions = [javascript(), oneDark];
 </script>
 
 <template>
 	<AccordionPanel title="Color Function">
 		<p>
-			Here is where you will write a JavaScript function that will be run once per tick for
-			each LED in your input mesh. This function must return an array of Numbers, where the
-			expected value is a float range from 0 to 1. Values outside of this range will be
+			Here is where you will write a JavaScript function body that will be run once per tick
+			for each LED in your input mesh. This function must return an array of Numbers, where
+			the expected value is a float range from 0 to 1. Values outside of this range will be
 			clamped to that range. There are several variables available for use inside this
 			function:
 		</p>
@@ -31,11 +36,13 @@ time: Number   // A value in 0 to 1 range</pre
 			<div class="form-control">
 				<label>
 					<span>Vertex Color Function</span>
-					<textarea
+					<codemirror
 						v-model="colorFunctionString"
-						rows="7"
-						cols="80"
-					></textarea>
+						:style="{ height: '400px' }"
+						:extensions="extensions"
+						:indent-with-tab="true"
+						:tab-size="4"
+					/>
 				</label>
 			</div>
 			<div>
