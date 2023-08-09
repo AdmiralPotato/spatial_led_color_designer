@@ -34,14 +34,14 @@ const keyHandlerMap = {
 	},
 };
 
-const listOfInputLikeTags = ['INPUT', 'TEXTAREA', 'SELECT'];
+const inputSelectors = ['input', 'textarea', 'select', '.cm-editor *'];
 window.addEventListener('keydown', (event) => {
 	console.log(`What is key? "${event.key}"`);
 	const handler = keyHandlerMap[event.key];
 	if (
 		handler &&
 		// don't use these when an input is focused
-		!listOfInputLikeTags.includes(event.target.tagName)
+		!event.target.matches(inputSelectors)
 	) {
 		event.preventDefault();
 		handler();
