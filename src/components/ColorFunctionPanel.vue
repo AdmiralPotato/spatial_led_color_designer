@@ -1,4 +1,5 @@
 <script setup>
+import { computed, ref } from 'vue';
 import useColorFunction from '@/composables/useColorFunction';
 import AccordionPanel from '@/components/AccordionPanel.vue';
 import { Codemirror } from 'vue-codemirror';
@@ -15,6 +16,18 @@ const {
 } = useColorFunction();
 
 const extensions = [javascript(), oneDark];
+
+const lastSelectedPattern = ref(null);
+const currentPattern = computed({
+	get() {
+		return lastSelectedPattern.value || presets[0];
+	},
+	set(v) {
+		lastSelectedPattern.value = v;
+		colorFunctionString.value = v.value;
+		processColorFunction();
+	},
+});
 </script>
 
 <template>
@@ -34,72 +47,61 @@ time: Number   // A value in 0 to 1 range</pre
 		>
 		<form @submit.prevent="processColorFunction">
 			<div class="form-control">
+				<label style="display: inline">
+					<span>Load pattern:</span>
+					<select v-model="currentPattern">
+						<optgroup label="Built-in">
+							<option
+								v-for="item in presets"
+								:key="item.label"
+								:value="item"
+							>
+								{{ item.label }}
+							</option>
+						</optgroup>
+						<optgroup label="User patterns (localStorage)">
+							<option
+								v-for="item in userPresets"
+								:key="item.label"
+								:value="item"
+							>
+								{{ item.label }}
+							</option>
+						</optgroup>
+					</select>
+				</label>
+				<button
+					v-if="lastSelectedPattern && lastSelectedPattern.is_custom"
+					type="button"
+					@click="removePresetByName(lastSelectedPattern.label)"
+				>
+					Delete "{{ lastSelectedPattern.label }}"
+				</button>
+			</div>
+			<div class="form-control">
 				<label>
 					<span>Vertex Color Function</span>
 					<codemirror
 						v-model="colorFunctionString"
-						:style="{ height: '400px' }"
 						:extensions="extensions"
 						:indent-with-tab="true"
 						:tab-size="4"
 					/>
 				</label>
-			</div>
-			<div>
-				<button
-					class="preset-button"
-					v-for="item in presets"
-					:key="item.label"
-					type="button"
-					@click="
-						colorFunctionString = item.value;
-						processColorFunction();
-					"
-				>
-					{{ item.label }}
-				</button>
-				<button
-					class="save"
-					type="button"
-					@click="saveCurrentPattern"
-				>
-					Save current pattern
-				</button>
-				<input
-					type="submit"
-					value="Process Color Function"
-				/>
-			</div>
-			<div v-if="userPresets.length">
-				<h3>User patterns (localStorage)</h3>
-				<div>
-					<span
-						v-for="item in userPresets"
-						:key="item.label"
+				<div style="text-align: right">
+					<button
+						class="save"
+						type="button"
+						@click="saveCurrentPattern"
 					>
-						<button
-							class="preset-button"
-							type="button"
-							@click="
-								colorFunctionString = item.value;
-								processColorFunction();
-							"
-						>
-							{{ item.label }}
-						</button>
-						<button
-							class="delete-button"
-							type="button"
-							@click="removePresetByName(item.label)"
-							:title="'Delete the pattern: ' + item.label"
-						>
-							x
-						</button>
-					</span>
+						Save Pattern
+					</button>
+					<input
+						type="submit"
+						value="Run Input"
+					/>
 				</div>
 			</div>
 		</form>
 	</AccordionPanel>
 </template>
-
-<style scoped></style>

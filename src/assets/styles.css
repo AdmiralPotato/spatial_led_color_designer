@@ -42,6 +42,7 @@ textarea {
 	background-color: #333;
 	border: 1px solid #666;
 	vertical-align: middle;
+	height: 2rem;
 }
 textarea {
 	max-width: 100%;
@@ -59,15 +60,13 @@ button:hover {
 	cursor: pointer;
 }
 
-.form-control > label {
-	display: block;
-	margin-bottom: 0.5rem;
+.form-control {
 	background-color: #252525;
 	padding: 8px;
+	margin-bottom: 0.5rem;
 }
-
-.delete-button {
-	margin-left: -5px;
+.form-control > label {
+	display: block;
 }
 
 label > span,

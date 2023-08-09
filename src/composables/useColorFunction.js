@@ -84,6 +84,7 @@ const saveCurrentPattern = () => {
 		console.log('What is userPresets?', userPresets);
 		userPresets.value.push({
 			label: name,
+			is_custom: true,
 			value: colorFunctionString.value,
 		});
 	}
