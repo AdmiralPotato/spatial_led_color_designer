@@ -70,7 +70,8 @@ const resize = () => {
 	}
 };
 
-let geometry = new SphereGeometry(0.05, 4, 2);
+let geometryBase = new SphereGeometry(1, 4, 2);
+let geometry = geometryBase.clone();
 let material = new MeshBasicMaterial({ color: 0xffff00 });
 const sphere = new Mesh(geometry, material);
 sphere.position.set(1, 0, 0);
@@ -106,7 +107,6 @@ const loop = () => {
 requestAnimationFrame(loop);
 
 const processObjText = (text) => {
-	geometry = new SphereGeometry(1, 4, 2);
 	// ...is this really the best way to empty the group?
 	group.children = [];
 	const verts = [];
@@ -144,6 +144,7 @@ const processObjText = (text) => {
 			Math.abs(max[2]),
 		);
 	const vertScale = 1 / scale / 20;
+	geometry.copy(geometryBase);
 	geometry.scale(vertScale, vertScale, vertScale);
 	group.scale.set(scale, scale, scale);
 	return verts;
@@ -176,6 +177,18 @@ const processOutputColors = () => {
 
 const verts = ref([]);
 const lastUploadedObjText = useLocalStorage('lastUploadedObjText', ref(defaultShape));
+const settings = useLocalStorage('settings', { ledScale: 0.5 });
+const ledSize = computed({
+	get() {
+		return settings.value.ledScale;
+	},
+	set(value) {
+		const vertScale = value * 1;
+		geometry.copy(geometryBase);
+		geometry.scale(vertScale, vertScale, vertScale);
+		settings.value.ledScale = vertScale;
+	},
+});
 
 const vertCount = computed(() => verts.value.length);
 
@@ -192,5 +205,6 @@ export default () => {
 		viewportCanvas: canvas,
 		vertCount,
 		ingestObjText,
+		ledSize,
 	};
 };

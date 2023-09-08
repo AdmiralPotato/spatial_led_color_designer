@@ -16,8 +16,8 @@
 - [ ] Python Class output
 - [x] Python BIN output
 - [ ] Animations presets should include duration/framerate
-- [ ] Code syntax highlighting
-- [ ] Slider to control scale of lights
+- [x] Code syntax highlighting
+- [?] Slider to control scale of lights
 
 ## Redactd's feature wishlist
 
@@ -26,6 +26,9 @@ He likes the FastLED library, so it would be useful to get familiar with its cap
 Here are some feature requests, listed in order of increasing difficulty:
 
 - [ ] Ability to re-order the light indices and re-export those as a correctly ordered OBJ
+
+- [ ] Ability to create a grid matrix in this software, with the ability to delete certain points
+	- [ ] Also add some options like these: https://macetech.github.io/FastLED-XY-Map-Generator/
 
 - [ ] Draw pixel art on the lights, one light at a time, with multi-frame support
 	- Example: https://www.youtube.com/watch?v=MNogUc4_8GM&list=PLDVHtC_tOo9GrB7hhHLN-oA3NHQOo-t_Z&t=693s
@@ -55,3 +58,6 @@ Here are some feature requests, listed in order of increasing difficulty:
 	- [ ] Select some good bitmap fonts
 	- [ ] scroll speed
 	- [ ] banner spacing for text repeat
+
+- [ ] Look up WLED's web interface? What are they doing that's cool? https://kno.wled.ge/
+	- [ ] Look at how it sets up "Segments"
