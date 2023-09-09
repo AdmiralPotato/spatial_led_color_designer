@@ -3,7 +3,7 @@ import useScene from '@/composables/useScene';
 import AccordionPanel from '@/components/AccordionPanel.vue';
 import { computed } from 'vue';
 
-const { ingestObjText, ledSize } = useScene();
+const { ingestObjText, ledSize, showIndices } = useScene();
 const setFile = (event) => {
 	const file = event.target.files[0];
 	file.text().then(ingestObjText);
@@ -40,6 +40,18 @@ const ledScaleDisplay = computed(() => ledSize.value.toFixed(2));
 						max="0.40"
 						step="0.01"
 						style="width: 100%"
+					/>
+				</label>
+			</div>
+			<div class="form-control">
+				<label>
+					<span
+						>Show Indices: <code>{{ showIndices }}</code></span
+					>
+					<input
+						type="checkbox"
+						:value="true"
+						v-model="showIndices"
 					/>
 				</label>
 			</div>

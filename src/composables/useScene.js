@@ -12,6 +12,7 @@ import {
 	Mesh,
 	Group,
 } from 'three';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import useTimeline from '@/composables/useTimeline';
 import useColorFunction from '@/composables/useColorFunction';
@@ -26,9 +27,11 @@ const renderer = new WebGLRenderer({
 	alpha: true,
 	antialias: true,
 });
+const labelRenderer = new CSS2DRenderer();
+labelRenderer.domElement.className = 'label-div';
 const canvas = renderer.domElement;
 const camera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
-const controls = new OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls(camera, labelRenderer.domElement);
 const scene = new Scene();
 
 const directionalLight = new DirectionalLight(0xffffff, 0.5);
@@ -66,6 +69,7 @@ const resize = () => {
 		camera.updateProjectionMatrix();
 		renderer.setPixelRatio(dpr);
 		renderer.setSize(clientWidth, clientHeight, false);
+		labelRenderer.setSize(clientWidth, clientHeight);
 		center.set(width / 2, height / 2);
 	}
 };
@@ -102,6 +106,7 @@ const loop = () => {
 			});
 		}
 		renderer.render(scene, camera);
+		labelRenderer.render(scene, camera);
 	}
 };
 requestAnimationFrame(loop);
@@ -111,7 +116,7 @@ const processObjText = (text) => {
 	group.children = [];
 	const verts = [];
 	const lines = text.replace(/\r/g, '').split('\n');
-	lines.forEach((line) => {
+	lines.forEach((line, index) => {
 		const segments = line.split(' ');
 		if (segments[0] === 'v') {
 			const vert = [segments[1] * 1, segments[2] * 1, segments[3] * 1];
@@ -119,7 +124,11 @@ const processObjText = (text) => {
 			// a unique material per object because that's the easiest way for each shape to have its own color
 			material = new MeshBasicMaterial({ color: 0xffff00 });
 			const sphere = new Mesh(geometry, material);
+			const labelText = document.createElement('div');
+			labelText.innerText = index;
+			const label = new CSS2DObject(labelText);
 			sphere.position.set(vert[0], vert[1], vert[2]);
+			sphere.add(label);
 			group.add(sphere);
 		}
 	});
@@ -177,7 +186,7 @@ const processOutputColors = () => {
 
 const verts = ref([]);
 const lastUploadedObjText = useLocalStorage('lastUploadedObjText', ref(defaultShape));
-const settings = useLocalStorage('settings', { ledScale: 0.5 });
+const settings = useLocalStorage('settings', { ledScale: 0.5, showIndices: false });
 const ledSize = computed({
 	get() {
 		return settings.value.ledScale;
@@ -187,6 +196,14 @@ const ledSize = computed({
 		geometry.copy(geometryBase);
 		geometry.scale(vertScale, vertScale, vertScale);
 		settings.value.ledScale = vertScale;
+	},
+});
+const showIndices = computed({
+	get() {
+		return settings.value.showIndices;
+	},
+	set(value) {
+		settings.value.showIndices = !!value;
 	},
 });
 
@@ -203,8 +220,10 @@ export default () => {
 	return {
 		processOutputColors,
 		viewportCanvas: canvas,
+		labelOverlay: labelRenderer.domElement,
 		vertCount,
 		ingestObjText,
 		ledSize,
+		showIndices,
 	};
 };

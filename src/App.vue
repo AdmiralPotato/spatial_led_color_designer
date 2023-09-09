@@ -9,11 +9,12 @@ import MeshInputPanel from '@/components/MeshInputPanel.vue';
 
 // even if no other components are mounted to do this work,
 // I want to be sure it's used to start the scene party
-const { vertCount, viewportCanvas } = useScene();
+const { vertCount, viewportCanvas, labelOverlay, showIndices } = useScene();
 
 const { advanceFrame, previousFrame, isPlaying } = useTimeline();
 
 const viewportHolder = ref(null);
+const labelHolder = ref(null);
 
 const showControls = ref(true);
 
@@ -49,6 +50,7 @@ window.addEventListener('keydown', (event) => {
 });
 onMounted(() => {
 	viewportHolder.value.appendChild(viewportCanvas);
+	labelHolder.value.appendChild(labelOverlay);
 });
 </script>
 
@@ -59,6 +61,11 @@ onMounted(() => {
 				<div
 					id="viewport-holder"
 					ref="viewportHolder"
+				></div>
+				<div
+					id="label-holder"
+					v-show="showIndices"
+					ref="labelHolder"
 				></div>
 				<div id="vert-count">vertCount: {{ vertCount }}</div>
 				<div class="bottom-panel">
