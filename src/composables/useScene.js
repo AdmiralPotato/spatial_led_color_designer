@@ -120,16 +120,17 @@ const processObjText = (text) => {
 	group.children = [];
 	const verts = [];
 	const lines = text.replace(/\r/g, '').split('\n');
-	lines.forEach((line, index) => {
+	lines.forEach((line) => {
 		const segments = line.split(' ');
 		if (segments[0] === 'v') {
 			const vert = [segments[1] * 1, segments[2] * 1, segments[3] * 1];
+			const vertIndex = verts.length;
 			verts.push(vert);
 			// a unique material per object because that's the easiest way for each shape to have its own color
 			material = new MeshBasicMaterial({ color: 0xffff00 });
 			const sphere = new Mesh(geometry, material);
 			const labelText = document.createElement('div');
-			labelText.innerText = index;
+			labelText.innerText = '' + vertIndex;
 			const label = new CSS2DObject(labelText);
 			sphere.position.set(vert[0], vert[1], vert[2]);
 			sphere.add(label);
