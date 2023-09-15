@@ -30,8 +30,12 @@ const renderer = new WebGLRenderer({
 const labelRenderer = new CSS2DRenderer();
 labelRenderer.domElement.className = 'label-div';
 const canvas = renderer.domElement;
+const viewportDomParent = document.createElement('div');
+viewportDomParent.className = 'viewport-parent';
+viewportDomParent.appendChild(canvas);
+viewportDomParent.appendChild(labelRenderer.domElement);
 const camera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
-const controls = new OrbitControls(camera, labelRenderer.domElement);
+const controls = new OrbitControls(camera, viewportDomParent);
 const scene = new Scene();
 
 const directionalLight = new DirectionalLight(0xffffff, 0.5);
@@ -203,9 +207,13 @@ const showIndices = computed({
 		return settings.value.showIndices;
 	},
 	set(value) {
-		settings.value.showIndices = !!value;
+		const sanitized = !!value;
+		labelRenderer.domElement.style.display = sanitized ? null : 'none';
+		settings.value.showIndices = sanitized;
 	},
 });
+// apply initial state after loading settings from localstorage
+labelRenderer.domElement.style.display = showIndices.value ? undefined : 'none';
 
 const vertCount = computed(() => verts.value.length);
 
@@ -219,8 +227,7 @@ ingestObjText(lastUploadedObjText.value);
 export default () => {
 	return {
 		processOutputColors,
-		viewportCanvas: canvas,
-		labelOverlay: labelRenderer.domElement,
+		viewportDomParent,
 		vertCount,
 		ingestObjText,
 		ledSize,
