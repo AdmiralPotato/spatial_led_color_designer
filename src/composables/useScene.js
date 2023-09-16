@@ -118,6 +118,7 @@ requestAnimationFrame(loop);
 const processObjText = (text) => {
 	// ...is this really the best way to empty the group?
 	group.children = [];
+	labelRenderer.domElement.innerHTML = '';
 	const verts = [];
 	const lines = text.replace(/\r/g, '').split('\n');
 	lines.forEach((line) => {
