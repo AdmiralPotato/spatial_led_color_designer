@@ -129,9 +129,13 @@ const processObjText = (text) => {
 			// a unique material per object because that's the easiest way for each shape to have its own color
 			material = new MeshBasicMaterial({ color: 0xffff00 });
 			const sphere = new Mesh(geometry, material);
+			const labelBox = document.createElement('div');
 			const labelText = document.createElement('div');
+			labelBox.className = 'vertex-label';
+			labelText.className = 'vertex-label-text';
 			labelText.innerText = '' + vertIndex;
-			const label = new CSS2DObject(labelText);
+			labelBox.appendChild(labelText);
+			const label = new CSS2DObject(labelBox);
 			sphere.position.set(vert[0], vert[1], vert[2]);
 			sphere.add(label);
 			group.add(sphere);
@@ -209,12 +213,14 @@ const showIndices = computed({
 	},
 	set(value) {
 		const sanitized = !!value;
-		labelRenderer.domElement.style.display = sanitized ? null : 'none';
+		const method = sanitized ? 'remove' : 'add';
+		viewportDomParent.classList[method]('hidden');
 		settings.value.showIndices = sanitized;
 	},
 });
 // apply initial state after loading settings from localstorage
-labelRenderer.domElement.style.display = showIndices.value ? undefined : 'none';
+const method = showIndices.value ? 'remove' : 'add';
+viewportDomParent.classList[method]('hidden');
 
 const vertCount = computed(() => verts.value.length);
 
