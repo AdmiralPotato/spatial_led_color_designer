@@ -26,6 +26,13 @@ He likes the FastLED library, so it would be useful to get familiar with its cap
 Here are some feature requests, listed in order of increasing difficulty:
 
 - [ ] Ability to re-order the light indices and re-export those as a correctly ordered OBJ
+	- [x] Create a mechanism to detect cursor overlap on the verts
+	- [x] Create a mechanism to select the verts
+	- [x] Deselect all verts with ctrl-d
+	- [ ] Add a "mode" to initiate this state
+	- [ ] Start to do the re-ordering
+	- [ ] Persist the state of the re-ordered object
+	- [ ] Export the state of the re-ordered object
 
 - [ ] Ability to create a grid matrix in this software, with the ability to delete certain points
 	- [ ] Also add some options like these: https://macetech.github.io/FastLED-XY-Map-Generator/

@@ -9,7 +9,7 @@ import MeshInputPanel from '@/components/MeshInputPanel.vue';
 
 // even if no other components are mounted to do this work,
 // I want to be sure it's used to start the scene party
-const { vertCount, viewportDomParent } = useScene();
+const { deselectAllVerts, vertCount, viewportDomParent } = useScene();
 
 const { advanceFrame, previousFrame, isPlaying } = useTimeline();
 
@@ -24,6 +24,8 @@ const keyHandlerMap = {
 	' ': () => {
 		isPlaying.value = !isPlaying.value;
 	},
+	'ctrl-d': deselectAllVerts,
+	'meta-d': deselectAllVerts,
 	ArrowRight: () => {
 		isPlaying.value = false;
 		advanceFrame();
@@ -36,8 +38,21 @@ const keyHandlerMap = {
 
 const inputSelectors = ['input', 'textarea', 'select', '.cm-editor *'];
 window.addEventListener('keydown', (event) => {
-	console.log(`What is key? "${event.key}"`);
-	const handler = keyHandlerMap[event.key];
+	// console.log('What is keydown event?', event);
+	let combination = [event.key];
+	if (event.ctrlKey) {
+		combination.unshift('ctrl');
+	}
+	if (event.altKey) {
+		combination.unshift('alt');
+	}
+	if (event.shiftKey) {
+		combination.unshift('shift');
+	}
+	if (event.metaKey) {
+		combination.unshift('meta');
+	}
+	const handler = keyHandlerMap[combination.join('-')];
 	if (
 		handler &&
 		// don't use these when an input is focused

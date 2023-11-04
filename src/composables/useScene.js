@@ -114,17 +114,36 @@ const loop = () => {
 	}
 };
 requestAnimationFrame(loop);
+
 // airbrush based selection to specify new indices!
 // Click and drag over cells to "select" them in order!
 let desiredSelectedState = false;
+let selectedVertIndices = [];
+let selectedVertDomNodes = [];
 const addOrRemoveSelected = (event) => {
 	if (event.buttons) {
+		const vertIndex = event.target.vertIndex;
+		const index = selectedVertIndices.indexOf(vertIndex);
 		if (desiredSelectedState) {
+			if (index === -1) {
+				selectedVertIndices.push(vertIndex);
+				selectedVertDomNodes.push(event.target);
+			}
 			event.target.classList.add('selected');
 		} else {
+			if (index !== -1) {
+				selectedVertIndices.splice(index, 1);
+				selectedVertDomNodes.splice(index, 1);
+			}
 			event.target.classList.remove('selected');
 		}
+		console.log('selectedVertIndices', selectedVertIndices);
 	}
+};
+const deselectAllVerts = () => {
+	selectedVertDomNodes.forEach((node) => node.classList.remove('selected'));
+	selectedVertIndices = [];
+	selectedVertDomNodes = [];
 };
 const clickLabel = (event) => {
 	desiredSelectedState = !event.target.classList.contains('selected');
@@ -157,6 +176,7 @@ const processObjText = (text) => {
 			const labelBox = document.createElement('div');
 			const labelText = document.createElement('div');
 			labelBox.className = 'vertex-label';
+			labelBox.vertIndex = vertIndex;
 			labelText.className = 'vertex-label-text';
 			labelText.innerText = '' + vertIndex;
 			labelBox.appendChild(labelText);
@@ -261,6 +281,7 @@ ingestObjText(lastUploadedObjText.value);
 
 export default () => {
 	return {
+		deselectAllVerts,
 		processOutputColors,
 		viewportDomParent,
 		vertCount,
