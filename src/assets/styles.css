@@ -108,6 +108,9 @@ pre {
 	border: 1px solid #0000;
 	border-radius: 50%;
 }
+.vertex-label.selected {
+	background-color: #0f08;
+}
 .vertex-label:hover {
 	color: #f00;
 	border: 1px solid #f00f;
