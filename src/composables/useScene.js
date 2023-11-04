@@ -114,6 +114,30 @@ const loop = () => {
 	}
 };
 requestAnimationFrame(loop);
+// airbrush based selection to specify new indices!
+// Click and drag over cells to "select" them in order!
+let desiredSelectedState = false;
+const addOrRemoveSelected = (event) => {
+	if (event.buttons) {
+		if (desiredSelectedState) {
+			event.target.classList.add('selected');
+		} else {
+			event.target.classList.remove('selected');
+		}
+	}
+};
+const clickLabel = (event) => {
+	desiredSelectedState = !event.target.classList.contains('selected');
+	addOrRemoveSelected(event);
+};
+const hoverLabel = (event) => {
+	addOrRemoveSelected(event);
+	controls.enabled = false;
+};
+const unHoverLabel = (event) => {
+	addOrRemoveSelected(event);
+	controls.enabled = true;
+};
 
 const processObjText = (text) => {
 	// ...is this really the best way to empty the group?
@@ -136,6 +160,9 @@ const processObjText = (text) => {
 			labelText.className = 'vertex-label-text';
 			labelText.innerText = '' + vertIndex;
 			labelBox.appendChild(labelText);
+			labelBox.addEventListener('mousedown', clickLabel);
+			labelBox.addEventListener('mouseover', hoverLabel);
+			labelBox.addEventListener('mouseout', unHoverLabel);
 			const label = new CSS2DObject(labelBox);
 			sphere.position.set(vert[0], vert[1], vert[2]);
 			sphere.add(label);
