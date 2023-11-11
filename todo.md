@@ -30,9 +30,10 @@ Here are some feature requests, listed in order of increasing difficulty:
 	- [x] Create a mechanism to select the verts
 	- [x] Deselect all verts with ctrl-d
 	- [ ] Add a "mode" to initiate this state
-	- [ ] Start to do the re-ordering
-	- [ ] Persist the state of the re-ordered object
-	- [ ] Export the state of the re-ordered object
+	- [x] Start to do the re-ordering
+	- [x] Persist the state of the re-ordered object
+	- [x] Export the state of the re-ordered object
+	- [ ] Make the UI for re-ordering the object BETTER
 
 - [ ] Ability to create a grid matrix in this software, with the ability to delete certain points
 	- [ ] Also add some options like these: https://macetech.github.io/FastLED-XY-Map-Generator/

@@ -14,6 +14,7 @@ import {
 } from 'three';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { prepareDownload } from '@/modules/prepareDownload';
 import useTimeline from '@/composables/useTimeline';
 import useColorFunction from '@/composables/useColorFunction';
 import { computed, ref } from 'vue';
@@ -122,20 +123,28 @@ let selectedVertIndices = [];
 let selectedVertDomNodes = [];
 const addOrRemoveSelected = (event) => {
 	if (event.buttons) {
-		const vertIndex = event.target.vertIndex;
+		let target = event.target;
+		if (event.target.classList.contains('vertex-label-text')) {
+			target = target.parentNode;
+		}
+		const vertIndex = target.vertIndex;
+		if (vertIndex === undefined) {
+			console.error('Bad target!', target);
+			throw new Error('VertIndex was undefined! Inspect your target!');
+		}
 		const index = selectedVertIndices.indexOf(vertIndex);
 		if (desiredSelectedState) {
 			if (index === -1) {
 				selectedVertIndices.push(vertIndex);
-				selectedVertDomNodes.push(event.target);
+				selectedVertDomNodes.push(target);
 			}
-			event.target.classList.add('selected');
+			target.classList.add('selected');
 		} else {
 			if (index !== -1) {
 				selectedVertIndices.splice(index, 1);
 				selectedVertDomNodes.splice(index, 1);
 			}
-			event.target.classList.remove('selected');
+			target.classList.remove('selected');
 		}
 		console.log('selectedVertIndices', selectedVertIndices);
 	}
@@ -243,7 +252,11 @@ const processOutputColors = () => {
 
 const verts = ref([]);
 const lastUploadedObjText = useLocalStorage('lastUploadedObjText', ref(defaultShape));
-const settings = useLocalStorage('settings', { ledScale: 0.5, showIndices: false });
+const settings = useLocalStorage('settings', {
+	ledScale: 0.5,
+	showIndices: false,
+	reOrderIndices: false,
+});
 const ledSize = computed({
 	get() {
 		return settings.value.ledScale;
@@ -266,21 +279,45 @@ const showIndices = computed({
 		settings.value.showIndices = sanitized;
 	},
 });
+const reOrderIndices = computed({
+	get() {
+		return settings.value.reOrderIndices;
+	},
+	set(value) {
+		const sanitized = !!value;
+		settings.value.reOrderIndices = sanitized;
+	},
+});
 // apply initial state after loading settings from localstorage
 const method = showIndices.value ? 'remove' : 'add';
 viewportDomParent.classList[method]('hidden');
 
 const vertCount = computed(() => verts.value.length);
 
+const currentObjDownloadLink = ref(null);
 const ingestObjText = (text) => {
+	console.log('Obj text!', text);
 	lastUploadedObjText.value = text;
+	currentObjDownloadLink.value = prepareDownload(text, 'obj', 'reordered_verts.obj');
 	verts.value = processObjText(text);
+};
+const regenerateObj = () => {
+	const lookup = verts.value;
+	let vertLineStrings = selectedVertIndices
+		.map((index) => `v ${lookup[index].join(' ')}`)
+		.join('\n');
+	let text = `o spatial_led_animator_reordered_shape
+${vertLineStrings}
+`;
+	ingestObjText(text);
 };
 
 ingestObjText(lastUploadedObjText.value);
 
 export default () => {
 	return {
+		regenerateObj,
+		currentObjDownloadLink,
 		deselectAllVerts,
 		processOutputColors,
 		viewportDomParent,
@@ -288,5 +325,6 @@ export default () => {
 		ingestObjText,
 		ledSize,
 		showIndices,
+		reOrderIndices,
 	};
 };

@@ -2,8 +2,17 @@
 import useScene from '@/composables/useScene';
 import AccordionPanel from '@/components/AccordionPanel.vue';
 import { computed } from 'vue';
+import DownloadLink from '@/components/DownloadLink.vue';
 
-const { ingestObjText, ledSize, showIndices } = useScene();
+const {
+	regenerateObj,
+	currentObjDownloadLink,
+	deselectAllVerts,
+	ingestObjText,
+	ledSize,
+	showIndices,
+	reOrderIndices,
+} = useScene();
 const setFile = (event) => {
 	const file = event.target.files[0];
 	file.text().then(ingestObjText);
@@ -43,17 +52,47 @@ const ledScaleDisplay = computed(() => ledSize.value.toFixed(2));
 					/>
 				</label>
 			</div>
-			<div class="form-control">
-				<label>
-					<span
-						>Show Indices: <code>{{ showIndices }}</code></span
-					>
-					<input
-						type="checkbox"
-						:value="true"
-						v-model="showIndices"
-					/>
-				</label>
+			<div class="flex">
+				<div class="form-control">
+					<label>
+						<span
+							>Show Indices: <code>{{ showIndices }}</code></span
+						>
+						<input
+							type="checkbox"
+							:value="true"
+							v-model="showIndices"
+						/>
+					</label>
+				</div>
+				<div class="form-control">
+					<label>
+						<span
+							>Re-order Indices: <code>{{ reOrderIndices }}</code></span
+						>
+						<input
+							type="checkbox"
+							:value="true"
+							v-model="reOrderIndices"
+						/>
+					</label>
+				</div>
+				<div class="form-control">
+					<div>
+						<button @click="deselectAllVerts">Deselect Verts</button>
+					</div>
+					<div>
+						<button
+							@click="regenerateObj"
+							title="Regenerate OBJ from re-ordered vertices"
+						>
+							Regenerate OBJ
+						</button>
+					</div>
+				</div>
+			</div>
+			<div>
+				<DownloadLink :download="currentObjDownloadLink" />
 			</div>
 		</form>
 	</AccordionPanel>

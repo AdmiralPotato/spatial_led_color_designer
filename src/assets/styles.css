@@ -75,6 +75,13 @@ button:hover {
 	display: block;
 }
 
+.flex {
+	display: flex;
+}
+.flex > * {
+	flex-basis: 100%;
+}
+
 label > span,
 label > input,
 label > textarea {

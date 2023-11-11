@@ -2,6 +2,7 @@ import { ref } from 'vue';
 import useScene from '@/composables/useScene';
 import useTimeline from '@/composables/useTimeline';
 import useColorFunction from '@/composables/useColorFunction';
+import { prepareDownload } from '@/modules/prepareDownload';
 const { processOutputColors } = useScene();
 const { startFrame, endFrame, framesPerSecond } = useTimeline();
 const { colorFunctionString } = useColorFunction();
@@ -59,25 +60,6 @@ const formatOutputAsBin = (data) => {
 	return Uint8Array.from(data);
 };
 
-let previousUrl;
-const prepareDownload = (rawData, name) => {
-	let data = rawData;
-	let type = 'octet/stream';
-	if (typeof data === 'string') {
-		type = 'text/plain';
-	}
-	const blob = new Blob([data], { type });
-	const url = window.URL.createObjectURL(blob);
-	if (previousUrl) {
-		window.URL.revokeObjectURL(previousUrl);
-	}
-	return {
-		href: url,
-		target: '_blank',
-		download: name,
-	};
-};
-
 const outputTypeMap = {
 	cHeader(dataArray) {
 		const cHeaderText = formatOutputAsCHeader(dataArray);
@@ -107,7 +89,7 @@ export default () => {
 		processOutput: () => {
 			const dataArray = processOutputColors();
 			const { data, fileName } = outputTypeMap[outputType.value](dataArray);
-			processedDownloadLink.value = prepareDownload(data, fileName);
+			processedDownloadLink.value = prepareDownload(data, 'headers', fileName);
 		},
 	};
 };

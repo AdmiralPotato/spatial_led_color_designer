@@ -1,6 +1,7 @@
 <script setup>
 import useProcessedOutput from '@/composables/useProcessedOutput';
 import AccordionPanel from '@/components/AccordionPanel.vue';
+import DownloadLink from '@/components/DownloadLink.vue';
 
 const { outputName, outputType, outputTypes, processedDownloadLink, processOutput } =
 	useProcessedOutput();
@@ -39,11 +40,7 @@ const { outputName, outputType, outputTypes, processedDownloadLink, processOutpu
 				/>
 			</div>
 		</form>
-		<p v-if="processedDownloadLink">
-			<a v-bind="processedDownloadLink"
-				>Download <code>{{ processedDownloadLink.download }}</code></a
-			>
-		</p>
+		<DownloadLink :download="processedDownloadLink" />
 	</AccordionPanel>
 </template>
 
