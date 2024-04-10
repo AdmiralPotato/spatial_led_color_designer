@@ -174,7 +174,7 @@ const processObjText = (text) => {
 	const verts = [];
 	const lines = text.replace(/\r/g, '').split('\n');
 	lines.forEach((line) => {
-		const segments = line.split(' ');
+		const segments = line.split(/\s+/g);
 		if (segments[0] === 'v') {
 			const vert = [segments[1] * 1, segments[2] * 1, segments[3] * 1];
 			const vertIndex = verts.length;
